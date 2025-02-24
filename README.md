@@ -23,8 +23,7 @@ QuickTask is a simple, lightweight to-do list app using `localStorage` for data 
 ## Contributing
 Fork, create a branch, commit changes, and open a Pull Request.
 
-## License
-[MIT License](LICENSE)
+
 
 **Author:** Your Name  
 [GitHub](https://github.com/phraol)
