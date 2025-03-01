@@ -1,4 +1,5 @@
 # QuickTask - To-Do List App
+---------------------------
 
 ## Overview
 QuickTask is a simple, lightweight to-do list app using `localStorage` for data persistence.
@@ -25,6 +26,6 @@ Fork, create a branch, commit changes, and open a Pull Request.
 
 
 
-**Author:** Your Name  
+**Author:** Phraol G
 [GitHub](https://github.com/phraol)
 
