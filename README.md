@@ -3,7 +3,7 @@
 
 ## Overview
 QuickTask is a simple, lightweight to-do list app using `localStorage` for data persistence.
-
+ -------------------------------------------------------------------------------------------
 ## Features
 - Add, complete, and delete tasks
 - Responsive UI with Tailwind CSS
