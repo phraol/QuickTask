@@ -1,26 +1,32 @@
-#QuickTask - To-Do List App
-A lightweight to-do list app using localStorage. Add, complete, and delete tasks with a clean, responsive UI.
+# QuickTask - To-Do List App
+---------------------------
 
-#Features
-Add tasks
-Mark tasks complete
-Delete tasks
-Responsive design (Tailwind CSS)
-No backend needed
+## Overview
+QuickTask is a simple, lightweight to-do list app using `localStorage` for data persistence.
+ -------------------------------------------------------------------------------------------
+## Features
+- Add, complete, and delete tasks
+- Responsive UI with Tailwind CSS
+- No backend required
 
-#Usage
-Type a task and click Add.
-Click a task to mark it done.
-Click X to delete.
+## Technologies
+- HTML, CSS (Tailwind), JavaScript
 
-#Setup
-Clone: git clone https://github.com/phraol/QuickTask.git
-Open index.html in a browser.
+## Usage
+1. Enter a task and click **Add**.
+2. Click a task to mark it complete.
+3. Click **X** to delete a task.
 
-#Contributing
-Fork, branch, commit, and submit a PR.
+## Installation
+1. Clone the repo: `git clone https://github.com/phraol/QuickTask.git`
+2. Open `index.html` in a browser.
 
-#Author
-Phraol G
+## Contributing
+Fork, create a branch, commit changes, and open a Pull Request.
 
-GitHub
+
+
+**Author:** Phraol G
+[GitHub](https://github.com/phraol)
+
+ make it best
