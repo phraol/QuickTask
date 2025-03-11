@@ -35,7 +35,7 @@
 <body class="flex justify-center items-center min-h-screen p-4">
     <div class="container w-full max-w-md p-6 rounded-xl shadow-2xl text-white">
         <h2 class="text-2xl font-bold mb-6 text-amber-400 tracking-wide">QuickTask</h2>
-        <div class="flex mb-6">
+        <div class="flex mb-6 gap-2">
             <input 
                 type="text" 
                 id="taskInput" 
@@ -43,12 +43,32 @@
                 placeholder="Add a new task..." 
                 aria-label="Enter a new task"
             >
+            <select 
+                id="prioritySelect" 
+                class="p-3 bg-gray-800 border border-gray-700 text-white rounded-lg"
+            >
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+            </select>
             <button 
                 onclick="addTask()" 
                 class="bg-amber-400 text-gray-900 px-4 rounded-r-lg hover:bg-amber-500 font-semibold transition-all duration-300"
             >
                 Add
             </button>
+        </div>
+        <div id="errorMessage" class="hidden text-red-400 text-sm mb-4"></div>
+        <div class="flex justify-between mb-4">
+            <select 
+                id="sortSelect" 
+                onchange="loadTasks()" 
+                class="p-2 bg-gray-800 border border-gray-700 text-white rounded-lg"
+            >
+                <option value="default">Default</option>
+                <option value="priority">Priority</option>
+                <option value="completed">Completed</option>
+            </select>
         </div>
         <ul id="taskList" class="space-y-3"></ul>
     </div>
@@ -61,16 +81,23 @@
 
         function addTask() {
             const taskInput = document.getElementById("taskInput");
+            const errorMessage = document.getElementById("errorMessage");
             const taskText = taskInput.value.trim();
-            if (!taskText) return;
+            const priority = document.getElementById("prioritySelect").value;
+
+            if (!taskText) {
+                errorMessage.textContent = "Please enter a task!";
+                errorMessage.classList.remove("hidden");
+                setTimeout(() => errorMessage.classList.add("hidden"), 3000);
+                return;
+            }
 
             let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
             if (!tasks.some(task => task.text === taskText)) {
-                tasks.push({ text: taskText, done: false });
+                tasks.push({ text: taskText, done: false, priority: priority });
                 localStorage.setItem("tasks", JSON.stringify(tasks));
                 loadTasks();
             }
-
             taskInput.value = "";
         }
 
@@ -81,22 +108,46 @@
             loadTasks();
         }
 
+        function editTask(index) {
+            const tasks = JSON.parse(localStorage.getItem("tasks"));
+            const newText = prompt("Edit task:", tasks[index].text);
+            if (newText && newText.trim()) {
+                tasks[index].text = newText.trim();
+                localStorage.setItem("tasks", JSON.stringify(tasks));
+                loadTasks();
+            }
+        }
+
         function deleteTask(index) {
-            let tasks = JSON.parse(localStorage.getItem("tasks"));
-            tasks.splice(index, 1);
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-            loadTasks();
+            if (confirm("Are you sure you want to delete this task?")) {
+                let tasks = JSON.parse(localStorage.getItem("tasks"));
+                tasks.splice(index, 1);
+                localStorage.setItem("tasks", JSON.stringify(tasks));
+                loadTasks();
+            }
         }
 
         function loadTasks() {
             const taskList = document.getElementById("taskList");
-            taskList.innerHTML = "";
+            const sortType = document.getElementById("sortSelect").value;
             let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+            // Sorting
+            if (sortType === "priority") {
+                tasks.sort((a, b) => {
+                    const priorityOrder = { high: 3, medium: 2, low: 1 };
+                    return priorityOrder[b.priority] - priorityOrder[a.priority];
+                });
+            } else if (sortType === "completed") {
+                tasks.sort((a, b) => a.done - b.done);
+            }
+
+            taskList.innerHTML = "";
             tasks.forEach((task, index) => {
                 const taskItem = document.createElement("li");
                 taskItem.className = "task-item flex justify-between items-center p-3 bg-gray-700 rounded-lg shadow-md";
                 taskItem.innerHTML = `
-                    <label class="flex items-center cursor-pointer">
+                    <label class="flex items-center cursor-pointer flex-grow">
                         <input 
                             type="checkbox" 
                             ${task.done ? "checked" : ""} 
@@ -104,13 +155,26 @@
                             class="w-5 h-5 mr-3 text-amber-400 border-gray-600 rounded focus:ring-amber-400 bg-gray-800"
                         >
                         <span class="${task.done ? 'line-through text-gray-400' : 'text-white'} flex-grow">${task.text}</span>
+                        <span class="text-xs px-2 py-1 ml-2 rounded ${
+                            task.priority === 'high' ? 'bg-red-500' : 
+                            task.priority === 'medium' ? 'bg-yellow-500' : 
+                            'bg-green-500'
+                        }">${task.priority}</span>
                     </label>
-                    <button 
-                        onclick="deleteTask(${index})" 
-                        class="text-red-400 hover:text-red-500 font-bold text-lg transition-all duration-200"
-                    >
-                        ×
-                    </button>
+                    <div class="flex gap-2">
+                        <button 
+                            onclick="editTask(${index})" 
+                            class="text-blue-400 hover:text-blue-500 text-sm transition-all duration-200"
+                        >
+                            Edit
+                        </button>
+                        <button 
+                            onclick="deleteTask(${index})" 
+                            class="text-red-400 hover:text-red-500 font-bold text-lg transition-all duration-200"
+                        >
+                            ×
+                        </button>
+                    </div>
                 `;
                 taskList.appendChild(taskItem);
             });
